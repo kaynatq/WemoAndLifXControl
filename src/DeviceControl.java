@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -171,12 +172,42 @@ class DeviceControl {
 	    connection.setRequestMethod("PUT");
 	    connection.setRequestProperty("Authorization", 
 	    		"Bearer c8edb8fd63084bcb0303254f8a5472a3d06d408c2fedd0532bc6759bae5f2f14");
-	    connection.setRequestProperty("power", "on");
 	    connection.setDoOutput(true);
 	    connection.setRequestProperty("Content-Type", "application/json");
-	    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream()); 
-	   
-	  
+	    DataOutputStream outputStreamWriter = new DataOutputStream(connection.getOutputStream()); 
+	    String urlParameters = "{  \"power\": \"on\", \"color\": \"blue saturation:0.5\",  "
+	    		+ "\"brightness\": 0.5,  \"duration\": 5}";
+	    outputStreamWriter.write(urlParameters.getBytes());
+	    outputStreamWriter.flush();
+	    outputStreamWriter.close();
+
+	    int res = connection.getResponseCode();
+	    System.out.println(res);
+
+
+	    InputStream is = connection.getInputStream();
+	    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+	    String line = null;
+	    while((line = br.readLine() ) != null) {
+	        System.out.println(line);
+	    }
+	    connection.disconnect();
+    }
+    
+    public void lifXTurnOff() throws IOException{
+    	URL url = new URL("https://api.lifx.com/v1/lights/all/state");
+	    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	    connection.setConnectTimeout(5000);//5 secs
+	    connection.setReadTimeout(5000);//5 secs
+
+	    connection.setRequestMethod("PUT");
+	    connection.setRequestProperty("Authorization", 
+	    		"Bearer c8edb8fd63084bcb0303254f8a5472a3d06d408c2fedd0532bc6759bae5f2f14");
+	    connection.setDoOutput(true);
+	    connection.setRequestProperty("Content-Type", "application/json");
+	    DataOutputStream outputStreamWriter = new DataOutputStream(connection.getOutputStream()); 
+	    String urlParameters = "{  \"power\": \"off\"}";
+	    outputStreamWriter.write(urlParameters.getBytes());
 	    outputStreamWriter.flush();
 	    outputStreamWriter.close();
 
