@@ -6,7 +6,7 @@ public class Main {
     	
     	DeviceControl wemoDeviceControl = new DeviceControl("");
     	wemoDeviceControl.lifXTurnOn();
-    	wemoDeviceControl.turnOff();
+    	wemoDeviceControl.wemoTurnOff();
     	
     }
 
