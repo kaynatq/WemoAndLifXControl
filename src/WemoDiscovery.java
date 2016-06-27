@@ -32,7 +32,6 @@ class WemoDiscovery {
         		this.listener = listener;
         	}
             public void run() {
-                System.out.println("Time's up!");
                 listener.terminate();
                 timer.cancel(); //Terminate the timer thread
             }
@@ -48,10 +47,7 @@ class WemoDiscovery {
         
         new Reminder(listener, 2);
         
-        listenerThread.join();
-        
-        System.out.print("Finished");
-        
+        listenerThread.join();        
         return endpoints;
     }
 
