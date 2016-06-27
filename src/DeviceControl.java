@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-class WemoDeviceControl {
+class DeviceControl {
     String name;
     String modelName;
     String modelNumber;
@@ -19,7 +19,7 @@ class WemoDeviceControl {
     String port;
     String endpoint;
     String firmware;
-    WemoDeviceControl(String endpoint) throws IOException {
+    DeviceControl(String endpoint) throws IOException {
  
     	
 //    	URL url = new URL("http://${\"192.168.1.90\"}:${1900}/upnp/control/basicevent1");

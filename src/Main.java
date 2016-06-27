@@ -4,7 +4,7 @@ public class Main {
     	WemoDiscovery wemoDiscovery = new WemoDiscovery();
     	wemoDiscovery.getEndpoints();
     	
-    	WemoDeviceControl wemoDeviceControl = new WemoDeviceControl("");
+    	DeviceControl wemoDeviceControl = new DeviceControl("");
     	wemoDeviceControl.lifXTurnOn();
     	wemoDeviceControl.turnOff();
     	
