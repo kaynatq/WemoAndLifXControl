@@ -1,13 +1,11 @@
 import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-    	WemoDiscovery wemoDiscovery = new WemoDiscovery();
-    	wemoDiscovery.getEndpoints();
+    	// WemoDiscovery wemoDiscovery = new WemoDiscovery();
+    	// wemoDiscovery.getEndpoints();
     	
-    	DeviceControl wemoDeviceControl = new DeviceControl("");
-    	wemoDeviceControl.lifXTurnOff();
-    	wemoDeviceControl.wemoTurnOff();
-    	
+    	DeviceControl wemoDeviceControl = new DeviceControl();
+    	// wemoDeviceControl.lifXTurnOff();
+    	wemoDeviceControl.wemoTurnOff();    	
     }
-
 }

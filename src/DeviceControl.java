@@ -6,64 +6,39 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
+/**
+ * Class to control all light bulbs
+ * @author kaynat
+ *
+ */
 class DeviceControl {
-    String name;
-    String modelName;
-    String modelNumber;
-    String serialNumber;
-    String macAddress;
-    String ipAddress;
-    String port;
-    String endpoint;
-    String firmware;
-    DeviceControl(String endpoint) throws IOException {
- 
+    DeviceControl() throws IOException {
     	
-//    	URL url = new URL("http://${\"192.168.1.90\"}:${1900}/upnp/control/basicevent1");
-  //      HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-    //    connection.setRequestMethod("GET");
-      //  connection.setRequestProperty("Content-Type", 
-//                "text/xml; charset=\"utf-8\"");
-//        connection.setRequestProperty("Host", "\"urn:Belkin:service:basicevent:1#GetBinaryState\"");
-//
-//        InputStream is = connection.getInputStream();
-//    
-//        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-//        StringBuilder response = new StringBuilder(); // or StringBuffer if not Java 5+ 
-//        String line;
-//        while((line = rd.readLine()) != null) {
-//          response.append(line);
-//          response.append('\r');
-//        }
-//        System.out.println(response);
-//        rd.close();
     }
         
 
     
     public void wemoTurnOn() throws IOException {
-    	URL url = new URL("http://192.168.1.92:49153/upnp/control/basicevent1");
+    	URL url = new URL("http://192.168.1.92:49153/upnp/control/bridge1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		connection.setRequestMethod("POST");
         connection.setRequestProperty("Accept-Charset", "UTF-8");
-        connection.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
-        connection.setRequestProperty("Accept", "");
-        connection.setRequestProperty("SOAPAction", "\"urn:Belkin:service:basicevent:1#SetBinaryState\"");
-        
-        
-	    String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-	           "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+        connection.setRequestProperty("Content-Type", "text/xml");
+        connection.setRequestProperty("SOAPACTION", "\"urn:Belkin:service:bridge:1#SetDeviceStatus\"");
+         String xml =
+	    		"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+	    +       "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
 	    +      "<s:Body>"
-	    +      "<u:SetBinaryState xmlns:u=\"urn:Belkin:service:basicevent:1\">"
-	    +      "<BinaryState>1</BinaryState>" 
-	    +      "</u:SetBinaryState>"
+	    +      "<u:SetDeviceStatus xmlns:u=\"urn:Belkin:service:bridge:1\">"
+	    +      "<DeviceStatusList>"
+	    + "&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;DeviceStatus&gt;&lt;IsGroupAction&gt;NO&lt;/IsGroupAction&gt;&lt;DeviceID available=&quot;YES&quot;&gt;94103EA2B277FE87&lt;/DeviceID&gt;&lt;CapabilityID&gt;10006,10008&lt;/CapabilityID&gt;&lt;CapabilityValue&gt;1,250&lt;/CapabilityValue&gt;&lt;/DeviceStatus&gt;'"	     
+		+      "</DeviceStatusList>"
+	    +      "</u:SetDeviceStatus>"
 	    +      "</s:Body>"
 	    +      "</s:Envelope>";
-    			    		
+        
 	    connection.setDoOutput(true);
 	    connection.setDoInput(true);
 
@@ -72,7 +47,7 @@ class DeviceControl {
 		os.flush();
 		os.close();
 	    int res = connection.getResponseCode();
-	   // System.out.println(res);
+        System.out.println(res);
 	    InputStream is = connection.getInputStream();
 	    BufferedReader br = new BufferedReader(new InputStreamReader(is));
 	    String line = null;
@@ -88,24 +63,23 @@ class DeviceControl {
      * @throws IOException
      */
     public void wemoTurnOff() throws IOException {
-    	URL url = new URL("http://192.168.1.92:49153/upnp/control/basicevent1");
+    	URL url = new URL("http://192.168.1.92:49153/upnp/control/bridge1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		connection.setRequestMethod("POST");
-        connection.setRequestProperty("Accept-Charset", "UTF-8");
-        connection.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
-        connection.setRequestProperty("Accept", "");
-        connection.setRequestProperty("SOAPAction", "\"urn:Belkin:service:basicevent:1#SetBinaryState\"");
-        
-        
-	    String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-	           "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+        connection.setRequestProperty("Content-Type", "text/xml");
+        connection.setRequestProperty("SOAPACTION", "\"urn:Belkin:service:bridge:1#SetDeviceStatus\"");
+        String xml =
+	    		"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+	    +       "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
 	    +      "<s:Body>"
-	    +      "<u:SetBinaryState xmlns:u=\"urn:Belkin:service:basicevent:1\">"
-	    +      "<BinaryState>0</BinaryState>" 
-	    +      "</u:SetBinaryState>"
+	    +      "<u:SetDeviceStatus xmlns:u=\"urn:Belkin:service:bridge:1\">"
+	    +      "<DeviceStatusList>"
+	    + "&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;DeviceStatus&gt;&lt;IsGroupAction&gt;NO&lt;/IsGroupAction&gt;&lt;DeviceID available=&quot;YES&quot;&gt;94103EA2B277FE87&lt;/DeviceID&gt;&lt;CapabilityID&gt;10006,10008&lt;/CapabilityID&gt;&lt;CapabilityValue&gt;0,0&lt;/CapabilityValue&gt;&lt;/DeviceStatus&gt;'"	     
+		+      "</DeviceStatusList>"
+	    +      "</u:SetDeviceStatus>"
 	    +      "</s:Body>"
 	    +      "</s:Envelope>";
-    			    		
+        		    		
 	    connection.setDoOutput(true);
 	    connection.setDoInput(true);
 
@@ -114,7 +88,7 @@ class DeviceControl {
 		os.flush();
 		os.close();
 	    int res = connection.getResponseCode();
-	   // System.out.println(res);
+	    System.out.println(res);
 	    InputStream is = connection.getInputStream();
 	    BufferedReader br = new BufferedReader(new InputStreamReader(is));
 	    String line = null;
@@ -124,6 +98,8 @@ class DeviceControl {
 	    connection.disconnect();
 	    
 	}
+    
+    
     
     /**
      * Method to toggle the state of a lifX bulb

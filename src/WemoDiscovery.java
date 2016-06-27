@@ -3,18 +3,22 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * class to discover UPnP devices
+ * @author kaynat
+ *
+ */
 class WemoDiscovery {
 	Listener listener;
     Long msToListen;
     Set<String> endpoints = new HashSet<>();
-    String iface;
+    private static final int LISTENER_DELAY_SECONDS = 5;
+    
     public WemoDiscovery() { 
     	
     }
@@ -45,36 +49,45 @@ class WemoDiscovery {
     	
         discover();
         
-        new Reminder(listener, 2);
+        new Reminder(listener, LISTENER_DELAY_SECONDS);
         
-        listenerThread.join();        
+        listenerThread.join();
         return endpoints;
-    }
-
-    
-    
+    }    
 
     private void discover() throws IOException {
         InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getByName("239.255.255.250"), 1900);
-        MulticastSocket socket = new MulticastSocket(null);
-        try {
-            socket.bind(new InetSocketAddress("192.168.1.90", 1901));
-            StringBuilder packet = new StringBuilder();
-            packet.append( "M-SEARCH * HTTP/1.1\r\n" );
-            packet.append( "HOST: 239.255.255.250:1900\r\n" );
-            packet.append( "MAN: \"ssdp:discover\"\r\n" );
-            packet.append( "MX: 2").append( "\r\n" );
-            packet.append( "ST: " ).append( "ssdp:all" ).append( "\r\n" ).append( "\r\n" );
-            packet.append( "ST: " ).append( "urn:Belkin:device:controller:1" ).append( "\r\n" ).append( "\r\n" );
-            byte[] data = packet.toString().getBytes();
-            System.out.println("sending discovery packet");
-            socket.send(new DatagramPacket(data, data.length, socketAddress));
-        } catch (IOException e) {
-        	listener.terminate();
-            throw e;
-        } finally {
-            socket.disconnect();
-            socket.close();
-        }
+        
+        int numTry = 3;
+		while (numTry > 0) {
+			MulticastSocket socket = new MulticastSocket(null);
+			try {
+				socket.bind(new InetSocketAddress("192.168.1.90", 1901));
+				StringBuilder packet = new StringBuilder();
+				packet.append("M-SEARCH * HTTP/1.1\r\n");
+				packet.append("HOST: 239.255.255.250:1900\r\n");
+				packet.append("MAN: \"ssdp:discover\"\r\n");
+				packet.append("MX: 2").append("\r\n");
+				packet.append("ST: ").append("ssdp:rootdevice").append("\r\n").append("\r\n");
+				packet.append("ST: ").append("urn:Belkin:device:controller:1").append("\r\n").append("\r\n");
+				byte[] data = packet.toString().getBytes();
+				System.out.println("sending discovery packet");
+				socket.send(new DatagramPacket(data, data.length, socketAddress));
+			} catch (IOException e) {
+				listener.terminate();
+				throw e;
+			} finally {
+				socket.disconnect();
+				socket.close();
+			}
+			
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			numTry--;
+		}
     }
 }
